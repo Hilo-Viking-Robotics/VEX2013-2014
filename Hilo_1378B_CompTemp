@@ -22,6 +22,16 @@
 
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//			
+//					2013-2014 VEX Toss Up
+//			Robot Number: 1378B		Team: Ashley Chen, Harry Bierman, Joel Paye
+//			Description: 4-motor WD, 4-motor six-bar lift, 2-motor intake
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//---------------------------------------PID Below--------------------------------------------------//
 int armHeight = 0;
 
 task ArmControl()
@@ -124,7 +134,7 @@ task ArmControl()
 
 	}
 }
-
+//---------------------------------------PID Below--------------------------------------------------//
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -185,16 +195,16 @@ void LiftArm( int armSpeed, int howHeigh )
 {
 	while( abs(SensorValue(lift) ) < howHeigh )
 	{
-			motor[liftLOut] = armSpeed;
-			motor[liftLIn] = armSpeed;
-			motor[liftROut] = armSpeed;
-			motor[liftRIn] = armSpeed;
+		motor[liftLOut] = armSpeed;
+		motor[liftLIn] = armSpeed;
+		motor[liftROut] = armSpeed;
+		motor[liftRIn] = armSpeed;
 	}
 
-			motor[liftLOut] = 0;
-			motor[liftLIn] = 0;
-			motor[liftROut] = 0;
-			motor[liftRIn] = 0;
+		motor[liftLOut] = 0;
+		motor[liftLIn] = 0;
+		motor[liftROut] = 0;
+		motor[liftRIn] = 0;
 }
 
 void autoOne()
