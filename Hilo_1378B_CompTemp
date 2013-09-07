@@ -134,32 +134,6 @@ task ArmControl()
 
 	}
 }
-//---------------------------------------PID Below--------------------------------------------------//
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-//                          Pre-Autonomous Functions
-//
-// You may want to perform some actions before the competition starts. Do them in the
-// following function.
-//
-/////////////////////////////////////////////////////////////////////////////////////////
-
-void pre_auton()
-{
-	bStopTasksBetweenModes = true;
-
- SensorValue(lift) = 0;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-//
-//                                 Autonomous Task
-//
-// This task is used to control your robot during the autonomous phase of a VEX Competition.
-// You must modify the code to add your own robot specific commands here.
-//
-/////////////////////////////////////////////////////////////////////////////////////////
 void Move( int howFast, int howFar )
 {
 	while( abs(SensorValue[drive]) < howFar )
@@ -179,15 +153,20 @@ void Move( int howFast, int howFar )
 	SensorValue[drive] = 0;
 }
 
-void Left( int leftTurn, int howFarLeft )
+void PointTurn( int leftDrive, int rightDrive, int turnDegree )
 {
-	while( abs(SensorValue[leftTurn]) < howFarLeft )
+	while( abs(SensorValue[drive]) < abs(turnDegree) )
 	{
-		motor[driveRBack] = howFarLeft;
-		motor[driveRMid] = howFarLeft;
+		motor[driveRBack] = rightDrive;
+		motor[driveRMid] = rightDrive;
+		motor[driveLBack] = leftDrive;
+		motor[driveLMid] = leftDrive;
 	}
 	motor[driveRBack] = 0;
 	motor[driveRMid] = 0;
+	motor[driveLBack] = 0;
+	motor[driveLMid] = 0;
+	
 	SensorValue[drive] = 0;
 }
 
@@ -228,13 +207,92 @@ void autoDamien()
 	armHeight = 300;
 }
 
+void AutoRedZero()
+{
+	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+	
+	motor[intakeL] = 127;
+	motor[intakeR] = 127;
+	
+	Move( 127, 100 );
+	
+	Move(-80, 50 );
+	
+	PointTurn( -127, 127, 50);
+	
+	Move( 127, 150 );
+	
+	PointTurn ( -127, 127, 150 );
+	
+	armHeight = 20;
+	
+	Move( 100, 100);
+}
+	
+	
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                          Pre-Autonomous Functions
+//
+// You may want to perform some actions before the competition starts. Do them in the
+// following function.
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void pre_auton()
+{
+	bStopTasksBetweenModes = true;
+
+ SensorValue(lift) = 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+//
+//                                 Autonomous Task
+//
+// This task is used to control your robot during the autonomous phase of a VEX Competition.
+// You must modify the code to add your own robot specific commands here.
+//
+/////////////////////////////////////////////////////////////////////////////////////////
+
 task autonomous()
 {
 	StartTask(ArmControl);
-	autoOne();
+	while(true)
+	{
+		if( ( SensorValue[AutoControl] > 0 ) && ( SensorValue[AutoControl] < 250 ) ) //potentiometer 0-250
+		{
+			AutoBlueZero();
+		}
+		
+	
+		else if( ( SensorValue[AutoControl] > 250 ) && ( SensorValue[AutoControl] < 500 ) ) //potentiometer 250-500
+		{
+			AutoBlueMid();
+		}
+		
+		else if( ( SensorValue[AutoControl] > 500 ) && ( SensorValue[AutoControl] < 750) ) //potentiometer 500-750
+		{
+			AutoRedZero();
+		}
+		
+		else if( ( SensorValue[AutoControl] > 750 ) && ( SensorValue[AutoControl] < 1000 )
+		{
+			AutoRedMid();
+		}
+		
+		else
+		{
+			AutoAuto();
+		}
+	}
+}	
+	
 
 
-	//autoDamien(); //initiate autonomous
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
