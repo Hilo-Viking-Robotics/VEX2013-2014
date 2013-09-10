@@ -55,7 +55,6 @@ task ArmControl()
 	float KD = 0.1;
 
 	//SensorValue(lift) = 0;
-	SensorValue(drive) = 0;
 	while (1) //Loop continously to make sure task doesn't stop
 	{
 
@@ -136,6 +135,8 @@ task ArmControl()
 }
 void Move( int howFast, int howFar )
 {
+	
+	SensorValue[drive] = 0;
 	while( abs(SensorValue[drive]) < howFar )
 	{
 
@@ -150,11 +151,12 @@ void Move( int howFast, int howFar )
 
 	motor[driveRBack] = 0;
 	motor[driveRMid] = 0;
-	SensorValue[drive] = 0;
+	
 }
 
 void PointTurn( int leftDrive, int rightDrive, int turnDegree )
 {
+	SensorValue[drive] = 0;
 	while( abs(SensorValue[drive]) < abs(turnDegree) )
 	{
 		motor[driveRBack] = rightDrive;
@@ -167,7 +169,7 @@ void PointTurn( int leftDrive, int rightDrive, int turnDegree )
 	motor[driveLBack] = 0;
 	motor[driveLMid] = 0;
 
-	SensorValue[drive] = 0;
+	
 }
 
 void LiftArm( int armSpeed, int howHeigh )
@@ -215,19 +217,44 @@ void AutoBlueZero()
 	motor[intakeL] = 127;
 	motor[intakeR] = 127;
 
-	Move( 127, 100 );
+	Move( 80, 300 );
+	wait1Msec(700);
+	Move( 70, 220 );
+	wait1Msec(700);
+	Move(-70, 80 );
+	wait1Msec(500);
+	
+	motor[intakeL] = 0;
+	motor[intakeR] = 0;
+	wait1Msec(300);
+	PointTurn( -80, 80, 280);
 
-	Move(-80, 50 );
+	Move( 127, 600 );
+	wait1Msec(500);
 
-	PointTurn( -127, 127, 50);
+	PointTurn( -80, 80, 280 );
 
-	Move( 127, 150 );
+	armHeight = 100;
 
-	PointTurn ( -127, 127, 150 );
+	Move( 100, 300 );
+	wait1Msec(200);
+	Move( 127, 1000 );
+	
+	wait1Msec(300);
+	PointTurn( 0, -80, 150 );
+	wait1Msec(300);
+	armHeight = 0;
+	wait1Msec(200);
+	Move( 127, 1000);
+	
+	motor[intakeL] = -127;
+	motor[intakeR] = -127;
 
-	armHeight = 20;
-
-	Move( 100, 100);
+	wait1Msec(1000);
+	
+	motor[intakeL] = 0;
+	motor[intakeR] = 0;
+	
 }
 
 
@@ -260,7 +287,7 @@ void pre_auton()
 task autonomous()
 {
 	StartTask(ArmControl);
-	while(true)
+	/*while(true)
 	{
 		if( ( SensorValue[AutoControl] < 1300 ) 
 		{
@@ -282,7 +309,8 @@ task autonomous()
 		{
 			AutoAuto();
 		}
-	}
+	}*/
+	AutoBlueZero();
 }	
 
 
