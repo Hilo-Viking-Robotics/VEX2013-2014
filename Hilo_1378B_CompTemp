@@ -22,108 +22,214 @@
 
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+//			
+//					2013-2014 VEX Toss Up
+//			Robot Number: 1378B		Team: Ashley Chen, Harry Bierman, Joel Paye
+//			Description: 4-motor WD, 4-motor six-bar lift, 2-motor intake
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//---------------------------------------PID Below--------------------------------------------------//
 int armHeight = 0;
 
 task ArmControl()
 {
-    int error = 0;
-    int speed = 0;
-    float integral = 0;
-    float derivative = 0;
-    int previousError = 0;
-    int encoderValue = 0;
+	int error = 0;
+	int speed = 0;
+	float integral = 0;
+	float derivative = 0;
+	int previousError = 0;
+	int encoderValue = 0;
 
-    const int ACCEPTABLE_ERROR = 0;
-    const int INTEGRAL_UPPER_BOUND = 20;
+	const int ACCEPTABLE_ERROR = 0;
+	const int INTEGRAL_UPPER_BOUND = 20;
 
-    int P_VALUE = 0; //For debugging.     Calculates constant*value to view amount of motor adjustment for each of the 3 parts.
-    int I_VALUE = 0;
-    int D_VALUE = 0;
+	int P_VALUE = 0; //For debugging.	 Calculates constant*value to view amount of motor adjustment for each of the 3 parts.
+	int I_VALUE = 0;
+	int D_VALUE = 0;
 
-    float KP = 0.4; //0.4
-    float KI = 0.001;
-    float KD = 0.1;
+	float KP = 0.4; //0.4
+	float KI = 0.001;
+	float KD = 0.1;
 
-    //SensorValue(lift) = 0;
-    SensorValue(drive) = 0;
-    while (1) //Loop continously to make sure task doesn't stop
-    {
+	//SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+	while (1) //Loop continously to make sure task doesn't stop
+	{
 
-        //if( SensorValue(lift) > 512 )
-        //{
-        //    ArmHeight = 512;
-        //}
-        //else
-        //    {
-        //    ArmHeight = SensorValue(lift);
-        //    }
+		//if( SensorValue(lift) > 512 )
+		//{
+		//	ArmHeight = 512;
+		//}
+		//else
+		//	{
+		//	ArmHeight = SensorValue(lift);
+		//	}
 
-        //-------find the error-----------------------------
-        encoderValue = SensorValue(lift);
-        error = armHeight - encoderValue;     //Remember, error can be + or -
-        if( abs(error) < ACCEPTABLE_ERROR )
-        {
-            error = 0;
-        }
-        //--------get the integral--------------------------
-        integral = integral + error;
-        if ( error == 0 )
-        {
-            integral = 0;
-        }
-        if ( (integral * KI) > INTEGRAL_UPPER_BOUND)
-        {
-            integral = 0;
-        }
-
-
-        //---------get derivitive and previous error--------
-        derivative = error - previousError;
-        previousError = error;
-
-        //---------Factor in the constants (for debugging)--
-        P_VALUE = KP * error;
-        I_VALUE = KI * integral;
-        D_VALUE = KD * derivative;
-
-        //---------set speed using PID and K constants------
-        speed = P_VALUE + I_VALUE + D_VALUE;
-
-        //---------motor control goes here------------------
-        if( vexRT( Btn5U ) )
-        {
-            motor[liftLOut] = 127;
-            motor[liftLIn] = 127;
-            motor[liftROut] = 127;
-            motor[liftRIn] = 127;
-
-            armHeight = SensorValue(lift) + 8;
-        }
-        else if( vexRT( Btn5D ) )
-        {
-            motor[liftLOut] = -127;
-            motor[liftLIn] = -127;
-            motor[liftROut] = -127;
-            motor[liftRIn] = -127;
-
-            armHeight = SensorValue(lift);
-        }
+		//-------find the error-----------------------------
+		encoderValue = SensorValue(lift);
+		error = armHeight - encoderValue;	 //Remember, error can be + or -
+		if( abs(error) < ACCEPTABLE_ERROR )
+		{
+			error = 0;
+		}
+		//--------get the integral--------------------------
+		integral = integral + error;
+		if ( error == 0 )
+		{
+			integral = 0;
+		}
+		if ( (integral * KI) > INTEGRAL_UPPER_BOUND)
+		{
+			integral = 0;
+		}
 
 
-        else //4if ( !(SensorValue(liftEncoder) < 10 ) && !(armHeight < 10 ) )
-        {
-            motor[liftLOut] = speed;
-            motor[liftLIn] = speed;
-            motor[liftROut] = speed;
-            motor[liftRIn] = speed;
-        }
+		//---------get derivitive and previous error--------
+		derivative = error - previousError;
+		previousError = error;
+
+		//---------Factor in the constants (for debugging)--
+		P_VALUE = KP * error;
+		I_VALUE = KI * integral;
+		D_VALUE = KD * derivative;
+
+		//---------set speed using PID and K constants------
+		speed = P_VALUE + I_VALUE + D_VALUE;
+
+		//---------motor control goes here------------------
+		if( vexRT( Btn5U ) )
+		{
+			motor[liftLOut] = 127;
+			motor[liftLIn] = 127;
+			motor[liftROut] = 127;
+			motor[liftRIn] = 127;
+
+			ArmHeight = SensorValue(lift) + 8;
+		}
+		else if( vexRT( Btn5D ) )
+		{
+			motor[liftLOut] = -127;
+			motor[liftLIn] = -127;
+			motor[liftROut] = -127;
+			motor[liftRIn] = -127;
+
+			ArmHeight = SensorValue(lift);
+		}
+
+
+		else //4if ( !(SensorValue(liftEncoder) < 10 ) && !(armHeight < 10 ) )
+		{
+			motor[liftLOut] = speed;
+			motor[liftLIn] = speed;
+			motor[liftROut] = speed;
+			motor[liftRIn] = speed;
+		}
 
 
 
-        //wait1Msec(5);
+		//wait1Msec(5);
 
-    }
+	}
 }
+void Move( int howFast, int howFar )
+{
+	while( abs(SensorValue[drive]) < howFar )
+	{
+
+		motor[driveLMid] = howFast;
+		motor[driveLBack] = howFast;
+
+		motor[driveRBack] = howFast;
+		motor[driveRMid] = howFast;
+	}
+	  motor[driveLMid] = 0;
+	  motor[driveLBack] = 0;
+
+	motor[driveRBack] = 0;
+	motor[driveRMid] = 0;
+	SensorValue[drive] = 0;
+}
+
+void PointTurn( int leftDrive, int rightDrive, int turnDegree )
+{
+	while( abs(SensorValue[drive]) < abs(turnDegree) )
+	{
+		motor[driveRBack] = rightDrive;
+		motor[driveRMid] = rightDrive;
+		motor[driveLBack] = leftDrive;
+		motor[driveLMid] = leftDrive;
+	}
+	motor[driveRBack] = 0;
+	motor[driveRMid] = 0;
+	motor[driveLBack] = 0;
+	motor[driveLMid] = 0;
+
+	SensorValue[drive] = 0;
+}
+
+void LiftArm( int armSpeed, int howHeigh )
+{
+	while( abs(SensorValue(lift) ) < howHeigh )
+	{
+		motor[liftLOut] = armSpeed;
+		motor[liftLIn] = armSpeed;
+		motor[liftROut] = armSpeed;
+		motor[liftRIn] = armSpeed;
+	}
+
+		motor[liftLOut] = 0;
+		motor[liftLIn] = 0;
+		motor[liftROut] = 0;
+		motor[liftRIn] = 0;
+}
+
+void autoOne()
+{
+	Move(127, 200 );
+	Move(-127, 200);
+	armheight = 400;
+	Move(127, 1200 );
+	Move(-127, 1400);
+	wait1Msec(3000);
+	Move(127, 1600 );
+	motor[intakeL]=-127;
+	motor[intakeR]=-127;
+	wait1Msec(5000);
+
+
+}
+
+void autoDamien()
+{
+	armHeight = 300;
+}
+
+void AutoBlueZero()
+{
+	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+
+	motor[intakeL] = 127;
+	motor[intakeR] = 127;
+
+	Move( 127, 100 );
+
+	Move(-80, 50 );
+
+	PointTurn( -127, 127, 50);
+
+	Move( 127, 150 );
+
+	PointTurn ( -127, 127, 150 );
+
+	armHeight = 20;
+
+	Move( 100, 100);
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -137,7 +243,7 @@ task ArmControl()
 
 void pre_auton()
 {
-    bStopTasksBetweenModes = true;
+	bStopTasksBetweenModes = true;
 
  SensorValue(lift) = 0;
 }
@@ -150,82 +256,39 @@ void pre_auton()
 // You must modify the code to add your own robot specific commands here.
 //
 /////////////////////////////////////////////////////////////////////////////////////////
-void Move( int howFast, int howFar )
-{
-    while( abs(SensorValue[drive]) < howFar )
-    {
-
-        motor[driveLMid] = howFast;
-        motor[driveLBack] = howFast;
-
-        motor[driveRBack] = howFast;
-        motor[driveRMid] = howFast;
-    }
-    motor[driveLMid] = 0;
-    motor[driveLBack] = 0;
-
-    motor[driveRBack] = 0;
-    motor[driveRMid] = 0;
-    SensorValue[drive] = 0;
-}
-
-void Left( int leftTurn, int howFarLeft )
-{
-    while( abs(SensorValue[leftTurn]) < howFarLeft )
-    {
-        motor[driveRBack] = howFarLeft;
-        motor[driveRMid] = howFarLeft;
-    }
-    motor[driveRBack] = 0;
-    motor[driveRMid] = 0;
-    SensorValue[drive] = 0;
-}
-
-void LiftArm( int armSpeed, int howHeigh )
-{
-    while( abs(SensorValue(lift) ) < howHeigh )
-    {
-            motor[liftLOut] = armSpeed;
-            motor[liftLIn] = armSpeed;
-            motor[liftROut] = armSpeed;
-            motor[liftRIn] = armSpeed;
-    }
-
-            motor[liftLOut] = 0;
-            motor[liftLIn] = 0;
-            motor[liftROut] = 0;
-            motor[liftRIn] = 0;
-}
-
-void autoOne()
-{
-    Move(127, 200 );
-    Move(-127, 200);
-    armHeight = 400;
-    Move(127, 1200 );
-    Move(-127, 1400);
-    wait1Msec(3000);
-    Move(127, 1600 );
-    motor[intakeL]=-127;
-    motor[intakeR]=-127;
-    wait1Msec(5000);
-
-
-}
-
-void autoDamien()
-{
-    armHeight = 300;
-}
 
 task autonomous()
 {
-    StartTask(ArmControl);
-    autoOne();
+	StartTask(ArmControl);
+	while(true)
+	{
+		if( ( SensorValue[AutoControl] < 1300 ) 
+		{
+			AutoRedZero();
+		}
 
 
-    //autoDamien(); //initiate autonomous
-}
+		else if( ( SensorValue[AutoControl] > 1300 ) && ( SensorValue[AutoControl] < 2700 ) ) 
+		{
+			AutoMid();
+		}
+
+		else if( SensorValue[AutoControl] > 2700 ) 
+		{
+			AutoBlueZero();
+		}
+
+		else
+		{
+			AutoAuto();
+		}
+	}
+}	
+
+
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -238,74 +301,66 @@ task autonomous()
 
 task usercontrol()
 {
-    armHeight = 0;
-    //StartTask(ArmControl);
-    while( true )
-    {
+	armHeight = 0;
+	StartTask(ArmControl);
+	while( true )
+	{
 
-        wait1Msec(25);
-        motor[driveLMid] = vexRT[Ch3];
-        motor[driveLBack] = vexRT[Ch3];
+		wait1Msec(25);
+		motor[driveLMid] = vexRT[Ch3];
+		motor[driveLBack] = vexRT[Ch3];
 
-        motor[driveRMid] = vexRT[Ch2];
-        motor[driveRBack] = vexRT[Ch2];
+		motor[driveRMid] = vexRT[Ch2];
+		motor[driveRBack] = vexRT[Ch2];
 
-        if( vexRT( Btn5U ) )
-        {
-            motor[liftLOut] = 127;
-            motor[liftLIn] = 127;
-            motor[liftROut] = 127;
-            motor[liftRIn] = 127;
-        }
-        else if( vexRT( Btn5D ) )
-        {
-            motor[liftLOut] = -127;
-            motor[liftLIn] = -127;
-            motor[liftROut] = -127;
-            motor[liftRIn] = -127;
-        }
-        else
-        {
-            motor[liftLOut] = 0;
-            motor[liftLIn] = 0;
-            motor[liftROut] = 0;
-            motor[liftRIn] = 0;
-        }
+		if( vexRT( Btn5U ) )
+		{
+			motor[liftLOut] = 127;
+			motor[liftLIn] = 127;
+			motor[liftROut] = 127;
+			motor[liftRIn] = 127;
+		}
+		else if( vexRT( Btn5D ) )
+		{
+			motor[liftLOut] = -127;
+			motor[liftLIn] = -127;
+			motor[liftROut] = -127;
+			motor[liftRIn] = -127;
+		}
+		else
+		{
+			motor[liftLOut] = 0;
+			motor[liftLIn] = 0;
+			motor[liftROut] = 0;
+			motor[liftRIn] = 0;
+		}
 
-        if( vexRT( Btn6U ) )
-        {
-            motor[intakeL] = 127;
-            motor[intakeR] = 127;
-        }
-        else if( vexRT( Btn6D ) )
-        {
-            motor[intakeL] = -127;
-            motor[intakeR] = -127;
-        }
-        else
-        {
-            motor[intakeL] = 0;
-            motor[intakeR] = 0;
-        }
-                if(SensorValue(lift) < -10)
-        {
-            StopTask(ArmControl);
-        }
-        else
-        {
-            StartTask(ArmControl);
-        }
-        /*
-        if( vexRT[Btn8U] )
-        {
-            StartTask(armControl);
-        }
-        else if( vexRT[Btn8D] )
-        {
-            StopTask(armControl);
-        }
+		if( vexRT( Btn6U ) )
+		{
+			motor[intakeL] = 127;
+			motor[intakeR] = 127;
+		}
+		else if( vexRT( Btn6D ) )
+		{
+			motor[intakeL] = -127;
+			motor[intakeR] = -127;
+		}
+		else
+		{
+			motor[intakeL] = 0;
+			motor[intakeR] = 0;
+		}
+		/*
+		if( vexRT[Btn8U] )
+		{
+			StartTask(armControl);
+		}
+		else if( vexRT[Btn8D] )
+		{
+			StopTask(armControl);
+		}
 */
-        wait1Msec(5);
-    }
+		wait1Msec(5);
+	}
 
 }
