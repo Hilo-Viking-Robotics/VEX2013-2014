@@ -23,7 +23,7 @@
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//			
+//
 //					2013-2014 VEX Toss Up
 //			Robot Number: 1378B		Team: Ashley Chen, Harry Bierman, Joel Paye
 //			Description: 4-motor WD, 4-motor six-bar lift, 2-motor intake
@@ -57,16 +57,6 @@ task ArmControl()
 	//SensorValue(lift) = 0;
 	while (1) //Loop continously to make sure task doesn't stop
 	{
-
-		//if( SensorValue(lift) > 512 )
-		//{
-		//	ArmHeight = 512;
-		//}
-		//else
-		//	{
-		//	ArmHeight = SensorValue(lift);
-		//	}
-
 		//-------find the error-----------------------------
 		encoderValue = SensorValue(lift);
 		error = armHeight - encoderValue;	 //Remember, error can be + or -
@@ -133,9 +123,11 @@ task ArmControl()
 
 	}
 }
+
+//---------------------------------Functions---------------------------------------//
 void Move( int howFast, int howFar )
 {
-	
+
 	SensorValue[drive] = 0;
 	while( abs(SensorValue[drive]) < howFar )
 	{
@@ -146,12 +138,12 @@ void Move( int howFast, int howFar )
 		motor[driveRBack] = howFast;
 		motor[driveRMid] = howFast;
 	}
-	  motor[driveLMid] = 0;
-	  motor[driveLBack] = 0;
+	motor[driveLMid] = 0;
+	motor[driveLBack] = 0;
 
 	motor[driveRBack] = 0;
 	motor[driveRMid] = 0;
-	
+
 }
 
 void PointTurn( int leftDrive, int rightDrive, int turnDegree )
@@ -169,7 +161,7 @@ void PointTurn( int leftDrive, int rightDrive, int turnDegree )
 	motor[driveLBack] = 0;
 	motor[driveLMid] = 0;
 
-	
+
 }
 
 void LiftArm( int armSpeed, int howHeigh )
@@ -182,32 +174,14 @@ void LiftArm( int armSpeed, int howHeigh )
 		motor[liftRIn] = armSpeed;
 	}
 
-		motor[liftLOut] = 0;
-		motor[liftLIn] = 0;
-		motor[liftROut] = 0;
-		motor[liftRIn] = 0;
+	motor[liftLOut] = 0;
+	motor[liftLIn] = 0;
+	motor[liftROut] = 0;
+	motor[liftRIn] = 0;
 }
 
-void autoOne()
-{
-	Move(127, 200 );
-	Move(-127, 200);
-	armheight = 400;
-	Move(127, 1200 );
-	Move(-127, 1400);
-	wait1Msec(3000);
-	Move(127, 1600 );
-	motor[intakeL]=-127;
-	motor[intakeR]=-127;
-	wait1Msec(5000);
+/////////////------------------------------------------Autonomous--------------------------------/////////////////////
 
-
-}
-
-void autoDamien()
-{
-	armHeight = 300;
-}
 
 void AutoBlueZero()
 {
@@ -223,38 +197,100 @@ void AutoBlueZero()
 	wait1Msec(700);
 	Move(-70, 80 );
 	wait1Msec(500);
-	
+
 	motor[intakeL] = 0;
 	motor[intakeR] = 0;
 	wait1Msec(300);
-	PointTurn( -80, 80, 280);
+	PointTurn( 80, -80, 280);
 
 	Move( 127, 600 );
 	wait1Msec(500);
 
-	PointTurn( -80, 80, 280 );
+	PointTurn( 80, -80, 280 );
 
 	armHeight = 100;
 
 	Move( 100, 300 );
 	wait1Msec(200);
 	Move( 127, 1000 );
-	
+
 	wait1Msec(300);
-	PointTurn( 0, -80, 150 );
+	PointTurn( -80, 80, 100 );
 	wait1Msec(300);
 	armHeight = 0;
 	wait1Msec(200);
 	Move( 127, 1000);
-	
+
 	motor[intakeL] = -127;
 	motor[intakeR] = -127;
 
 	wait1Msec(1000);
-	
+
 	motor[intakeL] = 0;
 	motor[intakeR] = 0;
-	
+
+}
+
+void AutoMid()
+{
+	Move(127, 200 );
+	Move(-127, 200);
+	armheight = 400;
+	Move(127, 1200 );
+	Move(-127, 1400);
+	wait1Msec(3000);
+	Move(127, 1600 );
+	motor[intakeL]=-127;
+	motor[intakeR]=-127;
+	wait1Msec(5000);
+}
+
+void AutoRedZero()
+{
+	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+
+	motor[intakeL] = 127;
+	motor[intakeR] = 127;
+
+	Move( 80, 300 );
+	wait1Msec(700);
+	Move( 70, 220 );
+	wait1Msec(700);
+	Move(-70, 80 );
+	wait1Msec(500);
+
+	motor[intakeL] = 0;
+	motor[intakeR] = 0;
+	wait1Msec(300);
+	PointTurn( -80, 80, 280);
+
+	Move( 110, 600 );
+	wait1Msec(500);
+
+	PointTurn( -80, 80, 280 );
+
+	armHeight = 100;
+	wait1Msec(100);
+	Move( 100, 300 );
+	wait1Msec(200);
+	Move( 127, 1400 );
+
+	wait1Msec(300);
+	PointTurn( 80, -80, 150 );
+	wait1Msec(300);
+	armHeight = 0;
+	wait1Msec(200);
+	Move( 127, 1000);
+
+	motor[intakeL] = -127;
+	motor[intakeR] = -127;
+
+	wait1Msec(1000);
+
+	motor[intakeL] = 0;
+	motor[intakeR] = 0;
+
 }
 
 
@@ -272,7 +308,7 @@ void pre_auton()
 {
 	bStopTasksBetweenModes = true;
 
- SensorValue(lift) = 0;
+	SensorValue(lift) = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -287,31 +323,28 @@ void pre_auton()
 task autonomous()
 {
 	StartTask(ArmControl);
-	/*while(true)
+	if( ( SensorValue[AutoControl] < 1300 )
 	{
-		if( ( SensorValue[AutoControl] < 1300 ) 
-		{
-			AutoRedZero();
-		}
+		AutoBlueZero();
+	}
 
 
-		else if( ( SensorValue[AutoControl] > 1300 ) && ( SensorValue[AutoControl] < 2700 ) ) 
-		{
-			AutoMid();
-		}
+	else if( ( SensorValue[AutoControl] > 1300 ) && ( SensorValue[AutoControl] < 2700 ) )
+	{
+		AutoMid();
+	}
 
-		else if( SensorValue[AutoControl] > 2700 ) 
-		{
-			AutoBlueZero();
-		}
+	else if( SensorValue[AutoControl] > 2700 )
+	{
+		AutoRedZero();
+	}
 
-		else
-		{
-			AutoAuto();
-		}
-	}*/
-	AutoBlueZero();
-}	
+	else
+	{
+		AutoAuto();
+	}
+
+}
 
 
 
@@ -378,16 +411,6 @@ task usercontrol()
 			motor[intakeL] = 0;
 			motor[intakeR] = 0;
 		}
-		/*
-		if( vexRT[Btn8U] )
-		{
-			StartTask(armControl);
-		}
-		else if( vexRT[Btn8D] )
-		{
-			StopTask(armControl);
-		}
-*/
 		wait1Msec(5);
 	}
 
