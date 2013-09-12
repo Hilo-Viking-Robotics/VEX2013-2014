@@ -1,11 +1,12 @@
-#pragma config(Sensor, I2C_1,  lift,           sensorNone)
+#pragma config(I2C_Usage, I2C1, i2cSensors)
+#pragma config(Sensor, I2C_1,  lift,           sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Motor,  port1,           RightFrontDrive, tmotorVex393, openLoop, reversed)
 #pragma config(Motor,  port2,           RightBackDrive, tmotorVex393, openLoop, reversed)
 #pragma config(Motor,  port3,           RightOuterLift, tmotorVex393, openLoop)
-#pragma config(Motor,  port4,           RightInnerLift, tmotorVex393, openLoop, reversed)
+#pragma config(Motor,  port4,           RightInnerLift, tmotorVex393, openLoop, encoder, encoderPort, I2C_1, 1000)
 #pragma config(Motor,  port5,           RightIntake,   tmotorVex393, openLoop)
 #pragma config(Motor,  port6,           LeftIntake,    tmotorVex393, openLoop, reversed)
-#pragma config(Motor,  port7,           LeftInnerLift, tmotorVex393, openLoop)
+#pragma config(Motor,  port7,           LeftInnerLift, tmotorVex393, openLoop, reversed)
 #pragma config(Motor,  port8,           LeftOuterLift, tmotorVex393, openLoop, reversed)
 #pragma config(Motor,  port9,           LeftBackDrive, tmotorVex393, openLoop)
 #pragma config(Motor,  port10,          LeftFrontDrive, tmotorVex393, openLoop)
@@ -19,14 +20,6 @@
 #pragma userControlDuration(120)
 
 #include "Vex_Competition_Includes.c"   //Main competition background code...do not modify!
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////
-//			
-//					                2013-2014 VEX Toss Up
-//			Robot Number: 1378Z		Team: Ryne Sako, Sam Fishman, Kea Uehara
-//			Description: 4-motor WD, 4-motor six-bar lift, 2-motor intake
-//
-///////////////////////////////////////////////////////////////////////////////////////////////////////
 int armHeight = 0;
 
 task ArmControl()
@@ -45,7 +38,7 @@ task ArmControl()
 	int I_VALUE = 0;
 	int D_VALUE = 0;
 
-	float KP = 2.5; //0.4
+	float KP = -0.5; //0.4
 	float KI = 0;
 	float KD = 0;
 
