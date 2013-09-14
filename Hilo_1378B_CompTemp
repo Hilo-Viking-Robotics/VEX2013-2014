@@ -224,7 +224,7 @@ void AutoBlueZero()
 	motor[intakeL] = -127;
 	motor[intakeR] = -127;
 
-	wait1Msec(1000);
+	wait1Msec(5000);
 
 	motor[intakeL] = 0;
 	motor[intakeR] = 0;
@@ -233,13 +233,30 @@ void AutoBlueZero()
 
 void AutoMid()
 {
-	Move(127, 200 );
-	Move(-127, 200);
-	armheight = 400;
+	armheight = 325;
 	Move(127, 1200 );
-	Move(-127, 1400);
-	wait1Msec(3000);
-	Move(127, 1600 );
+	Move(-127, 1200);
+	wait1Msec(2000);
+	Move(127, 450 );
+	PointTurn( -80, 80, 600);
+	Move( 127, 650);
+	Move( -127, 300 );
+	//PointTurn( 80, -80, 100 );
+	Move( 127, 400);
+	/*
+	Move(-127, 450);
+
+	
+	wait1Msec(2000);
+	
+	
+	armHeight = 0;
+	wait1Msec(2000);
+	Move(127, 1900);
+	//PointTurn( 80, -80, 100 );
+	armHeight = 500;
+	Move( 127, 700);*/
+	
 	motor[intakeL]=-127;
 	motor[intakeR]=-127;
 	wait1Msec(5000);
