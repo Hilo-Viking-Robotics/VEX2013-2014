@@ -218,12 +218,14 @@ void AutoMidZoneBlue()
 	Move( -127, 900 );
 	
 	
-	PointTurn(80, -80, 110);
+	PointTurn(80, -80, 300);
 	
-	Move( 127, 1500);
-	Move( -127, 800);
+	Move( 127, 1800);
+	Move( -127, 900);
 	armHeight = 0;
 	
+	
+	PointTurn( -80, 80, 100 );
 	Move( 127, 1000);
 	
 	motor[LeftIntake] = -127;
@@ -241,7 +243,7 @@ void AutoMidZoneBlue()
 void AutoMidZoneRed()
 {
 
-		SensorValue(drive) = 0;
+	SensorValue(drive) = 0;
 	SensorValue(lift) = 0;
 
 	StartTask(ArmControl);
@@ -258,13 +260,15 @@ void AutoMidZoneRed()
 	Move( -127, 900 );
 	
 	
-	PointTurn(-80, 80, 130);
+	PointTurn(-80, 80, 250);
 	
-	Move( 127, 1500);
-	Move( -127, 800);
+	Move( 127, 1700);
+	Move( -127, 900);
 	armHeight = 0;
-	
+
+	PointTurn( 80, -80, 100 );
 	Move( 127, 1000);
+
 	
 	motor[LeftIntake] = -127;
 	motor[RightIntake] = -127;
@@ -312,8 +316,8 @@ task autonomous()
 
 	StartTask(armControl);
 
-	AutoMidZoneRed();
-//	AutoMidZoneBlue();
+	//AutoMidZoneRed();
+	AutoMidZoneBlue();
 	
 	/*if( AutoControl  == 1 )
 	{
