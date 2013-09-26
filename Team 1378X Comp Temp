@@ -77,6 +77,48 @@ task ArmControl()
 		speed = P_VALUE + I_VALUE + D_VALUE;
 	}
 }
+
+void Move ( int speed, int howLong )
+{
+	while ( SensorValue[drive] < howLong )
+	{
+		motor[motorbackleft] = speed;
+		motor[motormiddleleft] = speed;
+		motor[motormiddleright] = speed;
+		motor[motorbackright] = speed;
+	}
+		motor[motorbackleft] = 0;
+		motor[motormiddleleft] = 0;
+		motor[motormiddleright] = 0;
+		motor[motorbackright] = 0;
+	}
+	
+void Turn ( int left, int right, int howLong )
+{
+	while ( SensorValue[drive] < howLong )
+	{
+		motor[motorbackleft] = left;
+		motor[motormiddleleft] = left;
+		motor[motormiddleright] = right;
+		motor[motorbackright] = right;
+	}
+		motor[motorbackleft] = 0;
+		motor[motormiddleleft] = 0;
+		motor[motormiddleright] = 0;
+		motor[motorbackright] = 0;
+	}
+	
+void Intake ( int speed, int howlong)
+{
+	while ( SensorValue[drive] < howLong )
+	{
+	motor[intakeL] = speed;
+	motor[intakeR] = speed;
+}
+	motor[intakeL] = 0;
+	motor[intake] = 0;
+}
+		
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 //                          Pre-Autonomous Functions
@@ -107,11 +149,11 @@ void pre_auton()
 
 task autonomous()
 {
+	Move (127, 500);
   // .....................................................................................
   // Insert user code here.
   // .....................................................................................
-
-	AutonomousCodePlaceholderForTesting();  // Remove this function call once you have "real" code.
+ // Remove this function call once you have "real" code.
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
