@@ -207,35 +207,35 @@ void AutoMidZoneBlue()
 	StartTask(ArmControl);
 
 	armHeight = -700;
-	
+
 	Move( 120, 1600 );
 	//Move( -120, 1800 );
-	
+
 	PointTurn( 80, -80, 600 );
 	//wait1Msec(2000);
-	
+
 	Move( 127, 900 );
 	Move( -127, 900 );
-	
-	
+
+
 	PointTurn(80, -80, 300);
-	
+
 	Move( 127, 1800);
 	Move( -127, 900);
 	armHeight = 0;
-	
-	
+
+
 	PointTurn( -80, 80, 100 );
 	Move( 127, 1000);
-	
+
 	motor[LeftIntake] = -127;
 	motor[RightIntake] = -127;
-	
+
 	wait1Msec(4000);
-	
+
 		motor[LeftIntake] = 0;
 	motor[RightIntake] = 0;
-	
+
 	Move( -127, 500);
 
 }
@@ -249,35 +249,38 @@ void AutoMidZoneRed()
 	StartTask(ArmControl);
 
 	armHeight = -700;
-	
+
 	Move( 120, 1600 );
 	//Move( -120, 1800 );
-	
-	PointTurn( -80, 80, 500 );
+
+	PointTurn( -80, 80, 450 );
 	//wait1Msec(2000);
-	
-	Move( 127, 900 );
-	Move( -127, 900 );
-	
-	
-	PointTurn(-80, 80, 250);
-	
-	Move( 127, 1700);
-	Move( -127, 900);
+
+	Move( 127, 1000 );
+	Move( -127, 1000 );
+
+
+	PointTurn(-80, 80, 300);
+
+	Move( 127, 1900);
+	Move( -127, 1000);
 	armHeight = 0;
 
-	PointTurn( 80, -80, 100 );
-	Move( 127, 1000);
-
+	PointTurn( 80, -80, 251 );
+	Move( 127, 1500);
 	
+	armHeight = -1100;
+	PointTurn( -80, 80, 50);
+	Move( 127, 1400);
+
 	motor[LeftIntake] = -127;
 	motor[RightIntake] = -127;
-	
+
 	wait1Msec(4000);
-	
+
 		motor[LeftIntake] = 0;
 	motor[RightIntake] = 0;
-	
+
 	Move( -127, 500);
 }
 
@@ -316,18 +319,8 @@ task autonomous()
 
 	StartTask(armControl);
 
-	//AutoMidZoneRed();
-	AutoMidZoneBlue();
-	
-	/*if( AutoControl  == 1 )
-	{
-		AutoMidZoneRed();
-	}
-	
-	else
-	{
-		AutoMidZoneBlue();
-	}*/
+	AutoMidZoneRed();
+	//AutoMidZoneBlue();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -346,8 +339,6 @@ task usercontrol()
 	StartTask(ArmControl);
 	while( true )
 	{
-
-
 		wait1Msec(25);
 		motor[RightBackDrive] = vexRT[Ch2];
 		motor[RightFrontDrive] = vexRT[Ch2];
