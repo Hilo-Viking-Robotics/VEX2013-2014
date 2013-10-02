@@ -44,11 +44,11 @@ task ArmControl()
 	float KI = 0;
 	float KD = 0;
 
-	SensorValue(lift) = 0;
+	SensorValue[lift] = 0;
 	while (1) //Loop continously to make sure task doesn't stop
 	{
 		//-------find the error-----------------------------
-		encoderValue = SensorValue(lift);
+		encoderValue = SensorValue[lift];
 		error = armHeight - encoderValue;  //Remember, error can be + or -
 		if( abs(error) < ACCEPTABLE_ERROR )
 		{
@@ -77,7 +77,41 @@ task ArmControl()
 
 		//---------set speed using PID and K constants------
 		speed = P_VALUE + I_VALUE + D_VALUE;
-	}
+		
+			if( vexRT( Btn6U ) )
+		{
+			motor[liftoutL] = 127;
+			motor[liftMidL] = 127;
+			motor[liftMidr] = 127;
+			motor[liftOutR] = 127;
+			
+			armHeight = SensorValue[lift] + 8;
+		}
+		
+		
+			else if( vexRT( Btn6D ) )
+		{
+			motor[liftoutL] = -127;
+			motor[liftMidL] = -127;
+			motor[liftMidr] = -127;
+			motor[liftOutR] = -127;
+			
+			armHeight = SensorValue[lift] + 8;
+		}
+		
+			else
+		{
+			motor[liftoutL] = speed;
+			motor[liftMidL] = speed;
+			motor[liftMidr] = speed;
+			motor[liftOutR] = speed;
+		}
+		
+	
+		
+		
+		}
+
 }
 
 void Move ( int speed, int howLong )
@@ -90,11 +124,11 @@ void Move ( int speed, int howLong )
 		motor[motormiddleright] = speed;
 		motor[motorbackright] = speed;
 	}
-		motor[motorbackleft] = 0;
-		motor[motormiddleleft] = 0;
-		motor[motormiddleright] = 0;
-		motor[motorbackright] = 0;
-	}
+	motor[motorbackleft] = 0;
+	motor[motormiddleleft] = 0;
+	motor[motormiddleright] = 0;
+	motor[motorbackright] = 0;
+}
 
 void Turn ( int left, int right, int howLong )
 {
@@ -106,19 +140,19 @@ void Turn ( int left, int right, int howLong )
 		motor[motormiddleright] = right;
 		motor[motorbackright] = right;
 	}
-		motor[motorbackleft] = 0;
-		motor[motormiddleleft] = 0;
-		motor[motormiddleright] = 0;
-		motor[motorbackright] = 0;
-	}
+	motor[motorbackleft] = 0;
+	motor[motormiddleleft] = 0;
+	motor[motormiddleright] = 0;
+	motor[motorbackright] = 0;
+}
 
 void Intake ( int speed, int howlong)
 {
-	
+
 	motor[intakeL] = speed;
 	motor[intakeR] = speed;
-	wait10Msec(howLong);
-	
+	wait10Msec(howlong);
+
 	motor[intakeL] = 0;
 	motor[intakeL] = 0;
 }
@@ -134,9 +168,9 @@ void Intake ( int speed, int howlong)
 
 void pre_auton()
 {
-  // Set bStopTasksBetweenModes to false if you want to keep user created tasks running between
-  // Autonomous and Tele-Op modes. You will need to manage all user created tasks if set to false.
-  bStopTasksBetweenModes = true;
+	// Set bStopTasksBetweenModes to false if you want to keep user created tasks running between
+	// Autonomous and Tele-Op modes. You will need to manage all user created tasks if set to false.
+	bStopTasksBetweenModes = true;
 
 	// All activities that occur before the competition starts
 	// Example: clearing encoders, setting servo positions, ...
@@ -155,10 +189,12 @@ task autonomous()
 {
 	Move (127, 150);
 	Turn (80, -80, 150);
-  // .....................................................................................
-  // Insert user code here.
-  // .....................................................................................
- // Remove this function call once you have "real" code.
+	
+	
+	// .....................................................................................
+	// Insert user code here.
+	// .....................................................................................
+	// Remove this function call once you have "real" code.
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -171,8 +207,8 @@ task autonomous()
 /////////////////////////////////////////////////////////////////////////////////////////
 
 task usercontrol()
-	{
-	 armHeight = 0;
+{
+	armHeight = 0;
 	StartTask(ArmControl);
 	while( true )
 	{
