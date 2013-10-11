@@ -199,6 +199,100 @@ void TimeAuto()
 	wait1Msec(5000);
 }
 
+void AutoZeroRed()
+{
+	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+
+	motor[LeftIntake] = 127;
+	motor[RightIntake] = 127;
+
+	Move( 80, 550 );
+	wait1Msec(700);
+	Move( 70, 300 );
+	wait1Msec(700);
+	Move(-70, 100 );
+	wait1Msec(500);
+
+	motor[LeftIntake] = 0;
+	motor[RightIntake] = 0;
+	wait1Msec(300);
+	PointTurn( -80, 80, 500);
+
+	Move( 127, 1100 );
+	wait1Msec(500);
+
+	PointTurn( -80, 80, 500 );
+
+	armHeight = 100;
+
+	Move( 100, 2500 );
+	wait1Msec(200);
+	//Move( 127, 1000 );
+
+	//wait1Msec(300);
+	PointTurn( -80, 80, 150 );
+	wait1Msec(300);
+	armHeight = 0;
+	wait1Msec(200);
+	Move( 127, 1700);
+
+	motor[LeftIntake] = -127;
+	motor[RightIntake] = -127;
+
+	wait1Msec(5000);
+
+	motor[LeftIntake] = 0;
+	motor[RightIntake] = 0;
+}
+	
+void AutoZeroBlue()
+{
+	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+
+	motor[LeftIntake] = 127;
+	motor[RightIntake] = 127;
+
+	Move( 80, 550 );
+	wait1Msec(700);
+	Move( 70, 300 );
+	wait1Msec(700);
+	Move(-70, 100 );
+	wait1Msec(500);
+
+	motor[LeftIntake] = 0;
+	motor[RightIntake] = 0;
+	wait1Msec(300);
+	PointTurn( 80, -80, 550);
+
+	Move( 127, 1100 );
+	wait1Msec(500);
+
+	PointTurn( 80, -80, 550 );
+
+	armHeight = 100;
+
+	Move( 100, 2500 );
+	wait1Msec(200);
+	//Move( 127, 1000 );
+
+	//wait1Msec(300);
+	PointTurn( 80, -80, 200 );
+	wait1Msec(300);
+	armHeight = 0;
+	wait1Msec(200);
+	Move( 127, 1500);
+
+	motor[LeftIntake] = -127;
+	motor[RightIntake] = -127;
+
+	wait1Msec(5000);
+
+	motor[LeftIntake] = 0;
+	motor[RightIntake] = 0;
+}
+
 void AutoMidZoneBlue()
 {
 	SensorValue(drive) = 0;
@@ -207,7 +301,7 @@ void AutoMidZoneBlue()
 	StartTask(ArmControl);
 
 	armHeight = -700;
-	
+
 		Move( 127, 1300);
 	Move( -127, 750);
 	PointTurn( -80, 80, 600);
@@ -257,7 +351,7 @@ void AutoMidZoneRed()
 	StartTask(ArmControl);
 
 	armHeight = -700;
-	
+
 	Move( 127, 1300);
 	Move( -127, 750);
 	PointTurn( 80, -80, 650);
@@ -265,7 +359,7 @@ void AutoMidZoneRed()
 	PointTurn( -80, 80, 450 );
 	Move( 127, 1000);
 	Move( -127, 700);
-	
+
 
 	/*Move( 120, 1600 );
 	//Move( -120, 1800 );
@@ -337,7 +431,9 @@ task autonomous()
 	StartTask(armControl);
 
 	//AutoMidZoneRed();
-	AutoMidZoneBlue();
+	//AutoMidZoneBlue();
+	//AutoZeroBlue();
+	AutoZeroRed();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
