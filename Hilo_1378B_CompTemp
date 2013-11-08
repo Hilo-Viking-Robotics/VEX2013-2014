@@ -1,5 +1,7 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    autoControl,    sensorPotentiometer)
+#pragma config(Sensor, dgtl11, leftSolenoid,   sensorDigitalOut)
+#pragma config(Sensor, dgtl12, rightSolenoid,  sensorDigitalOut)
 #pragma config(Sensor, I2C_1,  drive,          sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_2,  lift,           sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Motor,  port1,           driveRBack,    tmotorVex393, PIDControl, reversed, encoder, encoderPort, I2C_1, 1000)
@@ -450,6 +452,63 @@ task usercontrol()
 			motor[intakeR] = 0;
 		}
 		wait1Msec(5);
+
+		/*if( vexRT(Btn8D) ) //Test Shifting
+		{
+		SensorValue[dgtl12] = 1;	
+		}
+		else
+		{
+		SensorValue[dgtl12] = 0;	
+		}*/
+
+		int leftButtonToggleState = 0;
+		int leftButtonPressed = 0;
+		int RightButtonToggleState = 0;
+		int RightButtonPressed = 0;
+
+		while(1)// Shifters
+		{
+			if(vexRT[Btn8D] == 1)
+			{
+				if( !RightButtonPressed )
+				{
+					RightButtonToggleState = 1 - RightButtonToggleState;
+					RightButtonPressed = 1;
+				}
+			}
+			else
+			{
+				RightButtonPressed = 0;
+			}
+			
+			if(RightButtonToggleState)
+				SensorValue[dgtl11] = 1;
+			else
+				SensorValue[dgtl11] = 0;
+
+				
+			if(vexRT[Btn7D] == 1)
+			{
+				if(!leftButtonPressed)
+				{
+					leftButtonToggleState = 1 - leftButtonToggleState;
+					leftButtonPressed = 1;
+				}
+			}
+			else
+			{
+				leftButtonPressed = 0;
+			}
+			
+			if(leftButtonToggleState)
+				SensorValue[dgtl12] = 1;
+			else
+			SensorValue[dgtl12] = 0;
+		}
+
+
+
 	}
 
 }
