@@ -1,0 +1,8 @@
+bumperOne = BumperSwitch[port1];
+bumperTwo = BumperSwitch[port2];
+if(bumperOne == 1) {
+    AutonomousOne; // run the first autonomous
+}
+if(bumperTwo ==1) {
+    AutonomousTwo; // run the second autonomous
+}
