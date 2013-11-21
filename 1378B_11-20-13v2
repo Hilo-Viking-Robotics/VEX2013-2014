@@ -81,7 +81,7 @@ sLCDButtons enterLCDButton ( bool useLeft, bool useCenter, bool useRight, int ti
                 }
                 else if(useCenter && nLCDButtons == centerButton)
                 {
-                        quit = true;
+                        quit = true; 
                         LCDWaitForRelease();
                         returnButton = centerButton;
                 }
@@ -465,6 +465,8 @@ motor[intakeL] = 127;
 
 void pre_auton()
 {
+	int mid = 1;
+	int hang = 1;
 	bStopTasksBetweenModes = true;
 	
 	bLCDBacklight = true;
@@ -509,7 +511,7 @@ void pre_auton()
                 displayLCDCenteredString(0,"Alliance Pos?");
                 char leftArrow = 200;
                 char rightArrow = 199;
-                string leftText; sprintf(leftText, "%c Mid", leftArrow);
+                string leftText; sprintf(leftText, "Mid %c ", leftArrow);
                 string rightText; sprintf(rightText, "Hang %c", rightArrow);
                 displayLCDAlignedString(1,mid,leftText);
                 displayLCDAlignedString(1,hang,rightText);
@@ -627,7 +629,8 @@ void pre_auton()
 task autonomous()
 {
 	StartTask(ArmControl);
-	
+		int mid = 1;
+	int hang = 1;
 	if( allianceColor == blue )
 	{
 		if( alliancePosition == mid )
