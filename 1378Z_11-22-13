@@ -2,8 +2,9 @@
 #pragma config(Sensor, dgtl1,  rightSolenoid,  sensorDigitalOut)
 #pragma config(Sensor, dgtl2,  leftSolenoid,   sensorDigitalOut)
 #pragma config(Sensor, I2C_1,  lift,           sensorQuadEncoderOnI2CPort,    , AutoAssign)
+#pragma config(Sensor, I2C_2,  drive,          sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Motor,  port1,           RightBackDrive, tmotorVex393, openLoop, reversed)
-#pragma config(Motor,  port2,           RightFrontDrive, tmotorVex393, openLoop)
+#pragma config(Motor,  port2,           RightFrontDrive, tmotorVex393, openLoop, encoder, encoderPort, I2C_2, 1000)
 #pragma config(Motor,  port3,           RightInnerLift, tmotorVex393, openLoop, reversed)
 #pragma config(Motor,  port4,           RightOuterLift, tmotorVex393, openLoop)
 #pragma config(Motor,  port5,           RightIntake,   tmotorVex393, openLoop, reversed)
@@ -48,7 +49,7 @@ task ArmControl()
 	float KI = 0;
 	float KD = 0;
 
-	SensorValue(lift) = 0;
+	//SensorValue(lift) = 0;
 	while (1) //Loop continously to make sure task doesn't stop
 	{
 		//-------find the error-----------------------------
@@ -170,7 +171,7 @@ void Turn( int leftDrive, int rightDrive, int timeTurn )
 	motor[RightFrontDrive] = 0;
 }
 
-/*void Move( int howFast, int howFar )
+void Move( int howFast, int howFar )
 {
 
 	SensorValue[drive] = 0;
@@ -207,10 +208,14 @@ void PointTurn( int leftDrive, int rightDrive, int turnDegree )
 
 	motor[RightFrontDrive] = 0;
 	motor[RightBackDrive] = 0;
+}
 
+void Intake( int intakeMotors )
+{
+	motor[LeftIntake] = intakeMotors;
+	motor[RightIntake] = intakeMotors;
+}
 
-
-}*/
 ///---------------------------Autos----------0----------------------//
 
 void TimeAuto()
@@ -470,6 +475,9 @@ void pre_auton()
 	// Set bStopTasksBetweenModes to false if you want to keep user created tasks running between
 	// Autonomous and Tele-Op modes. You will need to manage all user created tasks if set to false.
 	bStopTasksBetweenModes = true;
+	SensorValue( lift ) = 0;
+	
+	
 
 	// All activities that occur before the competition starts
 	// Example: clearing encoders, setting servo positions, ...
@@ -498,6 +506,23 @@ task autonomous()
 
 	//TimeAuto();
 	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
+	StartTask(armControl);
+	
+	Intake( 127 );
+	Move( 100, 500);
+	wait1Msec(200);
+	Move( 100, 500);
+	wait1Msec(800);
+	Move( -127, 600);
+	Intake( 0 );
+	PointTurn( -127, 127, 1200);
+	Move( 127, 1600);
+	armHeight = 800;
+	wait1Msec(200);
+	Move( 127, 1200 );
+	
+	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -511,7 +536,8 @@ task autonomous()
 
 task usercontrol()
 {
-	//SensorValue(drive) = 0;
+//	SensorValue(lift) = 0;
+	SensorValue(drive) = 0;
 	armHeight = 0;
 	StopTask(ArmControl);
 	while( true )
@@ -525,7 +551,7 @@ task usercontrol()
 
 		if( vexRT( Btn6U ) )
 		{
-			//StartTask(ArmControl);
+			StartTask(ArmControl);
 			motor[LeftInnerLift] = 127;
 			motor[LeftOuterLift] = 127;
 			motor[RightInnerLift] = 127;
@@ -533,7 +559,7 @@ task usercontrol()
 		}
 		else if( vexRT( Btn6D ) )
 		{
-			//StopTask(ArmControl);
+			StopTask(ArmControl);
 			motor[LeftInnerLift] = -127;
 			motor[LeftOuterLift] = -127;
 			motor[RightInnerLift] = -127;
